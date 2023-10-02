@@ -9,6 +9,15 @@ These two documents [1](https://robertheaton.com/2020/04/27/how-does-a-tcp-reset
 
 ### First experiment
 
+The first experiment is setup to break attempts to do domain name resolution over TCP (TCP RESET attack only applied to TCP connections). The following comand performs a name resolution using the resolver 8.8.8.8. We setup the experiment such that the attacker (/reset_attack/main.py) sniffs the traffic on the device interface, and whenever a packet is sent to 8.8.8.8 it will craft a new packet pretending to be from 8.8.8.8 and sending it to dig client.  
+
+```
+dig @8.8.8.8 google.com +tcp
+```
+
+The following wireshark capture shows the DNS resolution over TCP before injecting reset packets:
+
+![image](https://github.com/amircybersec/testlab/assets/117060873/3da686e6-0ed0-422c-88d4-f7566d7e187a)
 
 
 ```
