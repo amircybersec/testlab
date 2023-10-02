@@ -3,11 +3,13 @@ In this repo, I plan to include several network level attack prototypes that are
 
 ## TCP RESET Attack
 
-This type of attack is well observed in China and Iran and is typically deployed to disrupt flow of traffic. In this attack model, a third device on the network that can sniff the traffic between the client and the server, can forge a new TCP packet with RESET flag and send it as a fake response from the server to the client to end the connection. This tactice is used by firewalls mainly to first allow the traffic to go through and analyze its content and block if certain condistions are not met. This method also has less colateral damage since blocking destination IP addresses altogether can block access to other services. 
+This type of attack is well observed in China and Iran and is deployed to disrupt flow of traffic. In this attack model, a third device on the network that can sniff the traffic between the client & server, can forge a new TCP packet with RESET flag and send it as a fake response coming from the server to end the connection. This tactic is used by firewalls mainly to first allow the traffic to go through, analyze its content, and block if certain condistions are met. This method also has less colateral damage since blocking destination IP addresses altogether may block access to other services. 
 
 These two documents [1](https://robertheaton.com/2020/04/27/how-does-a-tcp-reset-attack-work/),[2](https://squidarth.com/article/networking/2020/05/03/tcp-resets.html) provide great insights and details, that I highly recommend reading them if you want to get the full picture. In those documents, a fully local test is done using loopback adaptor and netcat (nc) to do the dial function. 
 
 ### First experiment
+
+
 
 ```
 go run github.com/Jigsaw-Code/outline-sdk/x/examples/outline-connectivity@latest -v -transport="split:1" -proto tcp -resolver 8.8.8.8
