@@ -27,7 +27,7 @@ The following wireshark capture shows the DNS resolution over TCP before injecti
 To reporduce the results, run the python scapy script on your local machine and make sure you set the client IP (your interface IP), server IP (8.8.8.8) and the server port (53) correctly in the script. Then run the script with superuser previlege:
 
 ```
-sudo PYTHONPATH=$HOME/.local/lib/python3.10/site-packages/ python main.py`
+sudo PYTHONPATH=$HOME/.local/lib/python3.10/site-packages/ python main.py
 ```
 In the above case, the scapy package is installed at `$HOME/.local/lib/python3.10/site-packages/`. 
 
