@@ -26,7 +26,7 @@ sudo PYTHONPATH=$HOME/.local/lib/python3.10/site-packages/ python main.py`
 ```
 In the above case, the scapy package is installed at `$HOME/.local/lib/python3.10/site-packages/`. 
 
-Here's the output of the script:
+If the above script is running, running dig will through "connection reset" error as shown below. Please note that dig retries a few times and aborts after several tries.
 
 ```
 > dig @8.8.8.8 google.com +tcp
@@ -37,12 +37,13 @@ Here's the output of the script:
 
 ### Timing challenges
 
+Once of the most challenging aspect of performing TCP Reset attack is making sure the forged TCP packet arrives at the client before server actual response (ACK) has arrived. This is due to a secuirty 
+
 ![image](https://github.com/amircybersec/testlab/assets/117060873/a432995f-96b0-4d2e-b59f-9e28547fc2e4)
 
+Looking under the hood:
 
-```
-
-```
+An slow connection between client and server and a faster connection between client and the attacker can give the attacker an edge in this attack.
 
 ![image](https://github.com/amircybersec/testlab/assets/117060873/4e55068d-98d7-43f1-9968-dfa4318cc593)
 
