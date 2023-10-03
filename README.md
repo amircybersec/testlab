@@ -22,9 +22,27 @@ The following wireshark capture shows the DNS resolution over TCP before injecti
 To reporduce the results, run the python scapy script on your local machine and make sure you set the client IP (your interface IP), server IP (8.8.8.8) and the server port (53) correctly in the script. Then run the script with superuser previlege:
 
 ```
-sudo PYTHONPATH=$HOME/.local/lib/python3.10/site-packages/ main.py`
+sudo PYTHONPATH=$HOME/.local/lib/python3.10/site-packages/ python main.py`
+```
+In the above case, the scapy package is installed at `$HOME/.local/lib/python3.10/site-packages/`. 
+
+Here's the output of the script:
+
+```
+> dig @8.8.8.8 google.com +tcp
+;; Connection to 8.8.8.8#53(8.8.8.8) for google.com failed: timed out.
+;; communications error to 8.8.8.8#53: connection reset
+;; Connection to 8.8.8.8#53(8.8.8.8) for google.com failed: timed out.
 ```
 
+### Timing challenges
+
+![image](https://github.com/amircybersec/testlab/assets/117060873/a432995f-96b0-4d2e-b59f-9e28547fc2e4)
+
+
+```
+
+```
 
 ```
 go run github.com/Jigsaw-Code/outline-sdk/x/examples/outline-connectivity@latest -v -transport="split:1" -proto tcp -resolver 8.8.8.8
