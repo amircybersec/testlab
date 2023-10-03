@@ -44,6 +44,9 @@ Here's the output of the script:
 
 ```
 
+![image](https://github.com/amircybersec/testlab/assets/117060873/4e55068d-98d7-43f1-9968-dfa4318cc593)
+
+
 ```
 go run github.com/Jigsaw-Code/outline-sdk/x/examples/outline-connectivity@latest -v -transport="split:1" -proto tcp -resolver 8.8.8.8
 ```
