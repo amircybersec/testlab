@@ -114,6 +114,8 @@ The connectivility tester successfully catches the TCP RESET error and logs it.
 {"resolver":"8.8.8.8:53","proto":"tcp","time":"2023-10-02T05:21:37Z","duration_ms":112,"error":{"op":"read","posix_error":"ECONNRESET","msg":"connection reset by peer"}}
 exit status 1
 ```
+Please note that you must update the sever IP and port in the `reset_attack/main.py' script to match your Outline server and listenging port.
+
 The next step is to setup a report collector sever and send the JSON report to it. I am planning to expand client support for logging for metrics. The report collector can collect, analyze, and/or visualize these data.
 
 
