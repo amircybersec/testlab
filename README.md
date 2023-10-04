@@ -66,17 +66,35 @@ To work around this, I decided to slowdown my Internet connection and increase l
 
 ![image](https://github.com/amircybersec/testlab/assets/117060873/4e55068d-98d7-43f1-9968-dfa4318cc593)
 
+In guess the relative position of the attacker to the victim (client) measured in number of hops can play a factor in this race. Also, it must be noted that we are sniffing the whole traffic and filtering it (processing it) in scapy (python) which are not optimized for speed. An attacker with an optimized software (written in Go or C), with a faster hardware (real time hardware?) can obtain an advantage. When infrastructures engage in this type of disruptions, they sometime trottle the traffic to allow them to perform DPI (deep packet inspection) on many streams. 
+
+
+### Second experiment
+
+One of the motivations for this way was to layout some test for one of the projects that I am working on. I am in the process of building a report collector system that clients can use to report incidents (network error log). This can be a great way to observe disruptions from client vantage point and report them to the service provider from a different route / mechanism. The report collectors can be distributed and more resilient than the client. 
+
+One of the real applications of this type of report collection is using them in VPN/tunnel clients that are often used for censorship circumvension. I hope the result of this work gets included in several applications with large install base.
+
+Okay, back to the point. Once of the applications I am looking at is Outline by Jigsaw which is a very popular distributed VPN system. Outline recently release a new SDK that you can use to add several bells and whistle to your application networking to increase resilience to censorship. There is connectivity tester script on the SDK that basically performs the same `dig` operation if configured with the following flags:
 
 ```
 go run github.com/Jigsaw-Code/outline-sdk/x/examples/outline-connectivity@latest -v -transport="split:1" -proto tcp -resolver 8.8.8.8
 ```
 
-### Second experiment
+For a one-to-one comparison you can 
+
+
+### Third experiment
+
+
 ```
 KEY=ss://examplekey_V0Zi1wb2x5MTMwNTpLeTUyN2duU3FEVFB3R0JpQ1RxUnlT@104.x.x.x:65496/
 PREFIX=POST%20
 go run github.com/Jigsaw-Code/outline-sdk/x/examples/outline-connectivity@latest -v -transport="$KEY?prefix=$PREFIX" -proto tcp -resolver 8.8.8.8 && echo Prefix "$PREFIX" works!
 ```
+
+Client ----encytpted DNS Resolution packet---> Server -----decypted packet ----> 8.8.8.8
+
 
 ### Attack successful
 ```
