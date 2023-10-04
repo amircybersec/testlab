@@ -79,21 +79,22 @@ It seems like the relative position of the attacker to the victim (client) -- me
 
 ### Second experiment
 
-One of the motivations for this work was to layout a testbed for one of the projects I am working on. I am in the process of building a report collector system that clients can use to report incidents (network error log). This can be a great way to observe disruptions from client vantage point and report them to the service provider through a different route / mechanism. The report collectors can be distributed and more resilient than the client. 
+One of the motivations for this work was to layout a test bed for one of the projects I am working on. I am in the process of building a report collector system that clients can use to report incidents (network error log). This can be a great way to observe disruptions from client/source vantage point and report them to the service provider through a different route / mechanism. The report collectors can be distributed and more resilient than the client. 
 
 One of the real applications of this type of report collection is using them in VPN/tunnel clients that are often used for censorship circumvension. I hope the result of this work gets included in several client applications with large install base.
 
-Okay, back to the point. Once of the applications I am looking at is Outline by Jigsaw which is a very popular distributed VPN system. Outline recently release a new SDK that you can use to add several bells and whistle to your application's networking to increase resilience to censorship. There is connectivity tester script on the SDK that basically performs the same `dig` operation if configured with the following flags:
+Okay, back to the point. Once of the applications I am looking at is Outline by Jigsaw which is a very popular distributed VPN system. Outline recently released a [new SDK](https://github.com/Jigsaw-Code/outline-sdk) that you can use to add several bells and whistle to your application's networking to increase resilience to censorship. There is a connectivity tester script on the SDK that basically performs the same `dig` operation if configured with the following flags:
 
 ```
 go run github.com/Jigsaw-Code/outline-sdk/x/examples/outline-connectivity@latest -v -transport="split:1" -proto tcp -resolver 8.8.8.8 -domain google.com
 ```
 
-For a one-to-one comparison you can can both and do a wireshark / or tcpdump capture and see for your self. The flag -transport defines a higher level data presentation. For example, `split:2` will break the TCP payload in two and translates one TCP connection to two TCP connections with two payloads, each carrying half of the payload. `split:1` basically provides a one-to-one mapping of input packet to the output packet (divided by one). 
+For a one-to-one comparison you can can both and do a wireshark / or tcpdump capture and see for yourself. The flag `-transport` defines a higher level data presentation / abstraction. For example, `split:2` will break the TCP payload in two and translates one TCP connection to two TCP connections with two payloads, each carrying half of the payload. `split:1` basically provides a one-to-one mapping of input packet to the output packet (divided by one). 
 
 
 ### Third experiment
 
+Outline can also use a shadowsocks transport to encypt and pass it to shadowsocks server. For this experiment, I setup a server on a VPS (datacenter) and installed the Outline server on it. I then ran the connectivity tester with `-transport` being set as shown below: 
 
 ```
 KEY=ss://examplekey_V0Zi1wb2x5MTMwNTpLeTUyN2duU3FEVFB3R0JpQ1RxUnlT@104.x.x.x:65496/
@@ -101,17 +102,18 @@ PREFIX=POST%20
 go run github.com/Jigsaw-Code/outline-sdk/x/examples/outline-connectivity@latest -v -transport="$KEY?prefix=$PREFIX" -proto tcp -resolver 8.8.8.8 && echo Prefix "$PREFIX" works!
 ```
 
-Client ----encytpted DNS Resolution packet---> Server -----decypted packet ----> 8.8.8.8
+The above command basically performs the following:
 
+Client ----encytpted DNS Resolution packet----> Server -----decypted packet ----> 8.8.8.8
 
-### Attack successful
+Please note that shadowsocks is end-to-end encypyted and the payload for DNS inquiry is encrypted and sent to the server. The server then decrypts and send the packet to the specified resolver and relays back the encrypted response. 
+
+The connectivility tester successfully catches the TCP RESET error and logs it. 
 ```
 [DEBUG] 2023/10/01 22:21:38.004242 main.go:135: Test error: read: failed to read salt: read tcp 192.x.x.x:33422->104.x.x.x:65496: read: connection reset by peer
 {"resolver":"8.8.8.8:53","proto":"tcp","time":"2023-10-02T05:21:37Z","duration_ms":112,"error":{"op":"read","posix_error":"ECONNRESET","msg":"connection reset by peer"}}
 exit status 1
 ```
+The next step is to setup a report collector sever and send the JSON report to it. I am planning to expand client support for logging for metrics. The report collector can collect, analyze, and/or visualize these data.
 
-### Timing challenges:
-
-Reset packages arriving too late after the connection is closed with FIN flag or the SEQ number has already increased. 
 
