@@ -66,22 +66,30 @@ To work around this, I decided to slowdown my Internet connection and increase l
 
 ![image](https://github.com/amircybersec/testlab/assets/117060873/4e55068d-98d7-43f1-9968-dfa4318cc593)
 
-In guess the relative position of the attacker to the victim (client) measured in number of hops can play a factor in this race. Also, it must be noted that we are sniffing the whole traffic and filtering it (processing it) in scapy (python) which are not optimized for speed. An attacker with an optimized software (written in Go or C), with a faster hardware (real time hardware?) can obtain an advantage. When infrastructures engage in this type of disruptions, they sometime trottle the traffic to allow them to perform DPI (deep packet inspection) on many streams. 
+The `dig` client retries a few times and gives up finally. 
 
+```
+> dig @8.8.8.8 google.com +tcp
+;; Connection to 8.8.8.8#53(8.8.8.8) for google.com failed: timed out.
+;; communications error to 8.8.8.8#53: connection reset
+;; Connection to 8.8.8.8#53(8.8.8.8) for google.com failed: timed out.
+```
+
+It seems like the relative position of the attacker to the victim (client) -- measured in number of hops -- can play a factor in this race. Also, it must be noted that we are sniffing the whole traffic, filtering, processing it in scapy (python) which is not optimized for speed. An attacker with an optimized software stack (written in Go or C), with a faster hardware (real time hardware?) can obtain an advantage. When infrastructures engage in this type of disruptions, they sometime trottle the traffic to allow them to perform DPI (deep packet inspection) on many streams. 
 
 ### Second experiment
 
-One of the motivations for this way was to layout some test for one of the projects that I am working on. I am in the process of building a report collector system that clients can use to report incidents (network error log). This can be a great way to observe disruptions from client vantage point and report them to the service provider from a different route / mechanism. The report collectors can be distributed and more resilient than the client. 
+One of the motivations for this work was to layout a testbed for one of the projects I am working on. I am in the process of building a report collector system that clients can use to report incidents (network error log). This can be a great way to observe disruptions from client vantage point and report them to the service provider through a different route / mechanism. The report collectors can be distributed and more resilient than the client. 
 
-One of the real applications of this type of report collection is using them in VPN/tunnel clients that are often used for censorship circumvension. I hope the result of this work gets included in several applications with large install base.
+One of the real applications of this type of report collection is using them in VPN/tunnel clients that are often used for censorship circumvension. I hope the result of this work gets included in several client applications with large install base.
 
-Okay, back to the point. Once of the applications I am looking at is Outline by Jigsaw which is a very popular distributed VPN system. Outline recently release a new SDK that you can use to add several bells and whistle to your application networking to increase resilience to censorship. There is connectivity tester script on the SDK that basically performs the same `dig` operation if configured with the following flags:
+Okay, back to the point. Once of the applications I am looking at is Outline by Jigsaw which is a very popular distributed VPN system. Outline recently release a new SDK that you can use to add several bells and whistle to your application's networking to increase resilience to censorship. There is connectivity tester script on the SDK that basically performs the same `dig` operation if configured with the following flags:
 
 ```
-go run github.com/Jigsaw-Code/outline-sdk/x/examples/outline-connectivity@latest -v -transport="split:1" -proto tcp -resolver 8.8.8.8
+go run github.com/Jigsaw-Code/outline-sdk/x/examples/outline-connectivity@latest -v -transport="split:1" -proto tcp -resolver 8.8.8.8 -domain google.com
 ```
 
-For a one-to-one comparison you can 
+For a one-to-one comparison you can can both and do a wireshark / or tcpdump capture and see for your self. The flag -transport defines a higher level data presentation. For example, `split:2` will break the TCP payload in two and translates one TCP connection to two TCP connections with two payloads, each carrying half of the payload. `split:1` basically provides a one-to-one mapping of input packet to the output packet (divided by one). 
 
 
 ### Third experiment
